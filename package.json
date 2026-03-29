@@ -1,0 +1,20 @@
+{
+  "name": "ai-cost-tracker",
+  "version": "1.0.0",
+  "description": "Track every AI API call, see exactly where your money goes, and catch cost spikes before they hurt.",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "summary": "tsx src/cli-summary.ts",
+    "audit": "tsx src/cli-audit.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
+  }
+}

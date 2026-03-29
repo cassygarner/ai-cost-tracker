@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Cost Tracker — Setup Guide</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #0a0a0a;
+    --surface: #141414;
+    --surface-2: #1c1c1c;
+    --border: #2a2a2a;
+    --text: #e5e5e5;
+    --text-muted: #888;
+    --accent: #3b82f6;
+    --accent-soft: #1e3a5f;
+    --green: #22c55e;
+    --red: #ef4444;
+    --yellow: #eab308;
+    --orange: #f97316;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    font-size: 15px;
+  }
+
+  .page {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 60px 40px;
+    page-break-after: always;
+    min-height: 100vh;
+  }
+
+  .page:last-child { page-break-after: avoid; }
+
+  /* Cover */
+  .cover {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-height: 100vh;
+  }
+
+  .cover-badge {
+    display: inline-block;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 32px;
+  }
+
+  .cover h1 {
+    font-size: 42px;
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 20px;
+    letter-spacing: -0.02em;
+  }
+
+  .cover h1 span { color: var(--accent); }
+
+  .cover .subtitle {
+    font-size: 18px;
+    color: var(--text-muted);
+    max-width: 500px;
+    margin-bottom: 40px;
+  }
+
+  .cover .author {
+    font-size: 14px;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border);
+    padding-top: 24px;
+    margin-top: 40px;
+  }
+
+  .cover .author strong { color: var(--text); }
+
+  /* Headings */
+  h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+
+  h2 .step-num {
+    color: var(--accent);
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 28px 0 12px;
+  }
+
+  .section-intro {
+    color: var(--text-muted);
+    margin-bottom: 32px;
+    font-size: 16px;
+  }
+
+  /* Code blocks */
+  pre {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 24px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    margin: 16px 0 24px;
+  }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+  }
+
+  p code, li code {
+    background: var(--surface);
+    padding: 2px 7px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+  }
+
+  .code-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+
+  /* Callout boxes */
+  .callout {
+    background: var(--surface);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 10px 10px 0;
+    padding: 20px 24px;
+    margin: 24px 0;
+  }
+
+  .callout.warning {
+    border-left-color: var(--yellow);
+  }
+
+  .callout.success {
+    border-left-color: var(--green);
+  }
+
+  .callout-title {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+
+  .callout p {
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+
+  /* Stats */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 24px 0;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+  }
+
+  .stat-card .label {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+  }
+
+  .stat-card .value {
+    font-size: 28px;
+    font-weight: 700;
+  }
+
+  .stat-card .value.red { color: var(--red); }
+  .stat-card .value.green { color: var(--green); }
+  .stat-card .value.blue { color: var(--accent); }
+
+  .stat-card .note {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  /* Table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 24px;
+    font-size: 14px;
+  }
+
+  th {
+    text-align: left;
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  tr:last-child td { border-bottom: none; }
+
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  .tag.green { background: #052e16; color: var(--green); }
+  .tag.orange { background: #431407; color: var(--orange); }
+  .tag.red { background: #450a0a; color: var(--red); }
+
+  /* Lists */
+  ul, ol {
+    padding-left: 20px;
+    margin: 12px 0;
+  }
+
+  li {
+    margin: 8px 0;
+  }
+
+  li strong {
+    color: var(--text);
+  }
+
+  /* Divider */
+  hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px 0;
+  }
+
+  /* CTA */
+  .cta-box {
+    background: linear-gradient(135deg, var(--accent-soft), #1a1a2e);
+    border: 1px solid var(--accent);
+    border-radius: 14px;
+    padding: 36px;
+    text-align: center;
+    margin: 40px 0;
+  }
+
+  .cta-box h3 {
+    font-size: 22px;
+    margin: 0 0 12px;
+  }
+
+  .cta-box p {
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+
+  .cta-box .email {
+    display: inline-block;
+    background: var(--accent);
+    color: white;
+    font-weight: 600;
+    font-size: 16px;
+    padding: 12px 32px;
+    border-radius: 8px;
+    text-decoration: none;
+  }
+
+  /* Print */
+  @media print {
+    body { background: white; color: #111; }
+    .page { padding: 40px 30px; }
+    pre { background: #f5f5f5; border-color: #ddd; }
+    .stat-card { background: #f5f5f5; border-color: #ddd; }
+    .callout { background: #f5f5f5; }
+    .cover-badge { background: #e8f0fe; }
+    .cta-box { background: #e8f0fe; border-color: var(--accent); }
+  }
+</style>
+</head>
+<body>
+
+<!-- PAGE 1: COVER -->
+<div class="page cover">
+  <div class="cover-badge">Free Tool + Guide</div>
+  <h1>Stop Guessing What<br>Your <span>AI Costs</span></h1>
+  <p class="subtitle">
+    A drop-in tracker for any TypeScript project that shows you exactly where your AI money goes, before the bill surprises you.
+  </p>
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="label">My spend before</div>
+      <div class="value red">~$120/mo</div>
+      <div class="note">37 crons, 12 agents, growing fast, zero visibility</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">My spend after</div>
+      <div class="value green">~$50/mo</div>
+      <div class="note">Same features, but now I see every dollar before it leaves</div>
+    </div>
+  </div>
+  <div class="author">
+    Built by <strong>Cassy Garner</strong> - @cassy.garner<br>
+    AI systems for content creators
+  </div>
+</div>
+
+<!-- PAGE 2: THE PROBLEM -->
+<div class="page">
+  <h2><span class="step-num">The Problem</span>AI costs don't stay flat. They grow.</h2>
+  <p class="section-intro">Every new cron job, every new agent, every new feature adds cost. Without tracking, you don't find out until the bill shocks you.</p>
+
+  <h3>What was happening in my system</h3>
+
+  <p>I went from 8 agents to 12 and 24 crons to 37 in a few weeks. My costs were scaling with every feature I shipped, but I had no visibility into any of it. When I finally looked:</p>
+
+  <ul>
+    <li><strong>Apify web scraping.</strong> Found ways to do most of it for free with the Instagram Graph API and YouTube Data API. I only use Apify now for the things I can't replicate.</li>
+    <li><strong>30+ API calls going through the wrong provider.</strong> I'd set up OpenRouter thinking I'd test different models. But once I committed to Anthropic as my primary, the system kept routing calls through OpenRouter anyway, without even checking if Anthropic was available. I was paying OpenRouter markup on calls that should have gone direct.</li>
+    <li><strong>Sonnet routing every Telegram message.</strong> My agent router was using Claude Sonnet to decide which specialist should handle each message. A simple classification task. Haiku does the same thing for 73% less.</li>
+    <li><strong>Crons running every 30 minutes when nothing changed.</strong> My collab reply checker was burning tokens checking an empty inbox.</li>
+  </ul>
+
+  <div class="callout">
+    <div class="callout-title">The real problem wasn't what I was wasting today</div>
+    <p>It was that costs were growing with every feature and I had no way to see it. Without the tracker, I would have hit $200+ within a couple months and had no idea why. The tracker I'm giving you is exactly what I built to catch this before it scaled.</p>
+  </div>
+</div>
+
+<!-- PAGE 3: WHAT YOU GET -->
+<div class="page">
+  <h2><span class="step-num">What's Included</span>The AI Cost Tracker</h2>
+  <p class="section-intro">Five TypeScript files you drop into any project. No database, no third-party service, no setup complexity.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>File</th>
+        <th>What it does</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>tracker.ts</code></td>
+        <td>Logs every LLM call to a local JSON file with model, tokens, cost, and a label you choose</td>
+      </tr>
+      <tr>
+        <td><code>wrapper.ts</code></td>
+        <td>Drop-in Anthropic client that tracks automatically. Replace one import and you're done</td>
+      </tr>
+      <tr>
+        <td><code>pricing.ts</code></td>
+        <td>Cost matrix for every major model (Anthropic, OpenAI, Google, Deepseek). Update when prices change</td>
+      </tr>
+      <tr>
+        <td><code>summary.ts</code></td>
+        <td>Daily summary with anomaly detection. Flags anything that's 2x+ its normal spend</td>
+      </tr>
+      <tr>
+        <td><code>cli-audit.ts</code></td>
+        <td>Scans your usage and tells you which tasks could use cheaper models</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout success">
+    <div class="callout-title">Works with any provider</div>
+    <p>The wrapper is Anthropic-native, but the tracker works with any LLM. OpenAI, Google, Deepseek, local models. Just call <code>trackUsage()</code> after any API call.</p>
+  </div>
+</div>
+
+<!-- PAGE 4: SETUP -->
+<div class="page">
+  <h2><span class="step-num">How to set it up</span>Everything happens in Claude Code</h2>
+  <p class="section-intro">Open your project in Claude Code and paste each prompt below. Claude handles the rest. You don't need to know where files go or how imports work.</p>
+
+  <h3>Prompt 1: Install the tracker</h3>
+  <div class="callout">
+    <p style="color: var(--text); font-size: 14px; line-height: 1.7; white-space: pre-wrap;">I want to add AI cost tracking to this project. Here are the ai-cost-tracker source files: [drag and drop the src/ folder into the chat, or paste the GitHub link]
+
+Add these files to my project, install any dependencies they need, and initialize the tracker in my main entry point with a monthly budget cap of $[your budget]. Make sure the usage log file is in my .gitignore so it doesn't get committed.</p>
+  </div>
+
+  <h3>Prompt 2: Start tracking your AI calls</h3>
+  <div class="callout">
+    <p style="color: var(--text); font-size: 14px; line-height: 1.7; white-space: pre-wrap;">Find every place in my codebase where I'm making AI API calls (Anthropic, OpenAI, Google, or any LLM provider) and add cost tracking to each one using the ai-cost-tracker.
+
+Give each call a descriptive label based on what it does, like "classify-email" or "draft-reply" or "generate-summary". I want to be able to see exactly which features cost what.</p>
+  </div>
+
+  <div class="callout warning">
+    <div class="callout-title">Labels are how you find the waste</div>
+    <p>The more specific your labels, the more useful your reports. "classify-email" tells you something. "default" tells you nothing.</p>
+  </div>
+</div>
+
+<!-- PAGE 5: READ YOUR DATA -->
+<div class="page">
+  <h2><span class="step-num">After a day or two</span>See where your money goes</h2>
+  <p class="section-intro">Once you've been running for a bit, use these prompts to get your reports.</p>
+
+  <h3>Prompt 3: Daily cost summary</h3>
+  <div class="callout">
+    <p style="color: var(--text); font-size: 14px; line-height: 1.7; white-space: pre-wrap;">Run the ai-cost-tracker daily summary and show me the results.</p>
+  </div>
+
+  <p>This shows you:</p>
+  <ul>
+    <li>Today's spend vs your 7-day average</li>
+    <li>Warning if you're above normal</li>
+    <li>Anomaly alerts for any feature that spiked</li>
+    <li>Spend breakdown by feature and by model</li>
+  </ul>
+
+  <h3>Prompt 4: Find where you're overspending</h3>
+  <div class="callout">
+    <p style="color: var(--text); font-size: 14px; line-height: 1.7; white-space: pre-wrap;">Run the ai-cost-tracker model audit and tell me which of my AI calls could use cheaper models without losing quality.</p>
+  </div>
+
+  <p>This scans your usage and finds:</p>
+  <ul>
+    <li>Features using expensive models for simple tasks</li>
+    <li>High-frequency callers that could be batched or reduced</li>
+    <li>Estimated dollar savings per month</li>
+  </ul>
+
+  <h3>Prompt 5: Set up budget alerts</h3>
+  <div class="callout">
+    <p style="color: var(--text); font-size: 14px; line-height: 1.7; white-space: pre-wrap;">Set up the ai-cost-tracker budget alert so I get a notification when I exceed $[your budget] per month. Send the alert to [Telegram/Slack/email]. Here's my webhook/token: [paste it]</p>
+  </div>
+</div>
+
+<!-- PAGE 5.5: LEVEL UP -->
+<div class="page">
+  <h2><span class="step-num">Take it further</span>Automate your cost reports</h2>
+  <p class="section-intro">The prompts above are manual. You run them when you remember. But the real power is when your system tells you automatically. Here's what that looks like.</p>
+
+  <h3>Automated weekly breakdown</h3>
+  <p>Imagine getting a message every Monday morning that says: "Last week you spent $12.40 across 847 calls. Your content-strategy cron is 2x its normal cost. Your message router could save $3/month on Haiku."</p>
+  <p>That's a cron job that runs the summary and sends it to you on a schedule. No remembering, no manual checks.</p>
+
+  <h3>Prompt 6: Set up a recurring cost report</h3>
+  <div class="callout">
+    <p style="color: var(--text); font-size: 14px; line-height: 1.7; white-space: pre-wrap;">Set up a cron job that runs the ai-cost-tracker summary automatically every [week/day] and sends me the report on [Telegram/Slack/email]. Include anomaly detection so I only get alerted if something spikes. Here's my webhook/token: [paste it]</p>
+  </div>
+
+  <h3>Monthly cost agent</h3>
+  <p>You can also set up an AI agent that reviews your full month of usage, compares it to last month, and gives you a plain-English breakdown of what changed, what's trending up, and what to do about it. This is what I run on my own system.</p>
+
+  <h3>Prompt 7: Build a monthly cost review agent</h3>
+  <div class="callout">
+    <p style="color: var(--text); font-size: 14px; line-height: 1.7; white-space: pre-wrap;">Build me a monthly cost review agent that reads my ai-cost-tracker usage log, compares this month to last month, and sends me a plain-English summary of: total spend change, which features cost more or less than before, which models I'm using most, and the top 3 things I should change to save money. Run it on the 1st of every month and send the report to [Telegram/Slack/email].</p>
+  </div>
+
+  <div class="callout success">
+    <div class="callout-title">These take a bit more setup</div>
+    <p>The prompts above will get you started, but cron workflows and automated agents have more moving parts. If you get stuck or want to see how others are setting theirs up, the AI Systems Accelerator community is where that happens.</p>
+  </div>
+</div>
+
+<!-- PAGE 6: CHEAT SHEET -->
+<div class="page">
+  <h2><span class="step-num">Reference</span>Where to start with model selection</h2>
+  <p class="section-intro">The single biggest cost saver. Most people use expensive models for everything. Here's where I'd start, but always test with your actual tasks. A model that works for my classification might not work for yours.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Task type</th>
+        <th>Start with</th>
+        <th>Potential savings</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Classifying, routing, tagging</td>
+        <td><span class="tag green">Haiku</span></td>
+        <td>up to 73% vs Sonnet</td>
+      </tr>
+      <tr>
+        <td>Scoring, ranking, filtering</td>
+        <td><span class="tag green">Haiku</span></td>
+        <td>up to 73% vs Sonnet</td>
+      </tr>
+      <tr>
+        <td>Parsing, extracting structured data</td>
+        <td><span class="tag green">Haiku</span></td>
+        <td>up to 73% vs Sonnet</td>
+      </tr>
+      <tr>
+        <td>Simple summarization</td>
+        <td><span class="tag green">Haiku / 4o-mini</span></td>
+        <td>up to 73-94%</td>
+      </tr>
+      <tr>
+        <td>Drafting content, emails</td>
+        <td><span class="tag orange">Sonnet</span></td>
+        <td>up to 80% vs Opus</td>
+      </tr>
+      <tr>
+        <td>Creative writing, strategy</td>
+        <td><span class="tag orange">Sonnet</span></td>
+        <td>up to 80% vs Opus</td>
+      </tr>
+      <tr>
+        <td>Complex reasoning, code gen</td>
+        <td><span class="tag orange">Sonnet or Opus</span></td>
+        <td>test both</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout warning">
+    <div class="callout-title">How to actually decide</div>
+    <p>Run the same 10 prompts through both models. Compare the outputs. Ask yourself:</p>
+    <ul style="margin: 12px 0 0; font-size: 14px; color: var(--text-muted);">
+      <li>Is the cheap model's output good enough for this task?</li>
+      <li>Does the expensive model fail less often (fewer retries = lower real cost)?</li>
+      <li>How many times per day does this run? A $0.001 difference at 100 calls/day is $3/month.</li>
+    </ul>
+    <p style="margin-top: 12px;">The cheapest model isn't always the cheapest option. A model that needs 3 retries costs more than one that gets it right the first time. Let the data decide, not the price tag.</p>
+  </div>
+
+  <h3>Quick cost reference</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Model</th>
+        <th>Input (per 1M tokens)</th>
+        <th>Output (per 1M tokens)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Claude Haiku 4.5</td>
+        <td>$0.80</td>
+        <td>$4.00</td>
+      </tr>
+      <tr>
+        <td>GPT-4o-mini</td>
+        <td>$0.15</td>
+        <td>$0.60</td>
+      </tr>
+      <tr>
+        <td>Gemini 2.0 Flash</td>
+        <td>$0.10</td>
+        <td>$0.40</td>
+      </tr>
+      <tr>
+        <td>Claude Sonnet 4</td>
+        <td>$3.00</td>
+        <td>$15.00</td>
+      </tr>
+      <tr>
+        <td>GPT-4o / GPT-5.4</td>
+        <td>$2.50</td>
+        <td>$10.00</td>
+      </tr>
+      <tr>
+        <td>Claude Opus 4</td>
+        <td>$15.00</td>
+        <td>$75.00</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- PAGE 7: CTA -->
+<div class="page" style="display: flex; flex-direction: column; justify-content: center;">
+  <h2 style="text-align: center; font-size: 32px; margin-bottom: 16px;">This is what I run on my own system.</h2>
+  <p style="text-align: center; color: var(--text-muted); font-size: 16px; max-width: 480px; margin: 0 auto 40px;">37 crons, 12 agents, all tracked. Every dollar accounted for. I built this because I needed it. Now you have it too.</p>
+
+  <div class="cta-box" style="text-align: left;">
+    <h3 style="text-align: center;">Want to work with me?</h3>
+    <p style="color: var(--text); font-size: 15px; line-height: 1.7;">I offer three things: consulting to figure out where AI fits in your business, training to get your team actually using it, and full system builds like the one you just read about where I scope it, build it, and hand it over.</p>
+    <p style="color: var(--text); font-size: 15px; line-height: 1.7; margin-top: 16px;">If any of that sounds like what you need, DM me <strong>"BUILD"</strong> on Instagram and we'll figure out if it's a good fit.</p>
+    <div style="text-align: center; margin-top: 24px;">
+      <a href="https://instagram.com/cassy.garner" class="email">@cassy.garner on Instagram</a>
+    </div>
+    <a href="https://skool.com/aisystemsaccelerator" style="display: block; margin-top: 32px; text-decoration: none;">
+      <img src="skool-cover.png" alt="AI Systems Accelerator" style="width: 100%; border-radius: 10px; border: 1px solid var(--border);">
+    </a>
+    <p style="color: var(--text); font-size: 15px; margin-top: 16px; text-align: center;">Join the AI Systems Accelerator on Skool for more setups, resources, and a community of likeminded builders.</p>
+    <div style="text-align: center; margin-top: 12px;">
+      <a href="https://skool.com/aisystemsaccelerator" style="color: var(--accent); text-decoration: none; font-weight: 600; font-size: 15px;">skool.com/aisystemsaccelerator</a>
+    </div>
+  </div>
+
+  <p style="text-align: center; color: var(--text-muted); font-size: 13px; margin-top: 32px;">
+    Built by Cassy Garner - @cassy.garner<br>
+    AI systems for content creators
+  </p>
+</div>
+
+</body>
+</html>
