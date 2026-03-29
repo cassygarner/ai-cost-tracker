@@ -9,7 +9,8 @@
     "build": "tsc",
     "summary": "tsx src/cli-summary.ts",
     "audit": "tsx src/cli-audit.ts",
-    "review": "tsx src/cli-review.ts"
+    "review": "tsx src/cli-review.ts",
+    "ai-review": "tsx src/cli-ai-review.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0"

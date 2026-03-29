@@ -2,6 +2,7 @@ export { initTracker, trackUsage, getMonthSpend, getTodaySpend, getSpendByLabel,
 export { createTrackedClient } from "./wrapper.js";
 export { generateSummary, formatSummary } from "./summary.js";
 export { generateReview, formatReview } from "./review.js";
+export { generateAIReview } from "./ai-review.js";
 export { estimateCostUSD, MODEL_PRICING } from "./pricing.js";
 export type { TokenEntry, TrackerConfig } from "./tracker.js";
 export type { DailySummary } from "./summary.js";
