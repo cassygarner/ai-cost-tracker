@@ -476,31 +476,60 @@ Give each call a descriptive label based on what it does, like "classify-email" 
   </div>
 </div>
 
-<!-- PAGE 5.5: LEVEL UP -->
+<!-- PAGE 5.5: AUTOMATED REVIEWS -->
 <div class="page">
-  <h2><span class="step-num">Take it further</span>Automate your cost reports</h2>
-  <p class="section-intro">The prompts above are manual. You run them when you remember. But the real power is when your system tells you automatically. Here's what that looks like.</p>
+  <h2><span class="step-num">Take it further</span>Automated cost reviews</h2>
+  <p class="section-intro">The tracker comes with a built-in review system that compares your current spending to the previous period. You pick the frequency: daily, weekly, or monthly.</p>
 
-  <h3>Automated weekly breakdown</h3>
-  <p>Imagine getting a message every Monday morning that says: "Last week you spent $12.40 across 847 calls. Your content-strategy cron is 2x its normal cost. Your message router could save $3/month on Haiku."</p>
-  <p>That's a cron job that runs the summary and sends it to you on a schedule. No remembering, no manual checks.</p>
+  <h3>What the review tells you</h3>
+  <ul>
+    <li>This period's spend vs the previous period (and the % change)</li>
+    <li>Your top features ranked by cost, with how much each one changed</li>
+    <li>Which models you're using most</li>
+    <li>Spikes: anything that's 2x+ its previous cost</li>
+    <li>Plain-English suggestions on what to do about it</li>
+  </ul>
 
-  <h3>Prompt 6: Set up a recurring cost report</h3>
+  <h3>Prompt 6: Run a review</h3>
   <div class="callout">
-    <p style="color: var(--text); font-size: 14px; line-height: 1.7; white-space: pre-wrap;">Set up a cron job that runs the ai-cost-tracker summary automatically every [week/day] and sends me the report on [Telegram/Slack/email]. Include anomaly detection so I only get alerted if something spikes. Here's my webhook/token: [paste it]</p>
+    <p style="color: var(--text); font-size: 14px; line-height: 1.7; white-space: pre-wrap;">Run the ai-cost-tracker review for [daily/weekly/monthly] and show me the results.</p>
   </div>
 
-  <h3>Monthly cost agent</h3>
-  <p>You can also set up an AI agent that reviews your full month of usage, compares it to last month, and gives you a plain-English breakdown of what changed, what's trending up, and what to do about it. This is what I run on my own system.</p>
-
-  <h3>Prompt 7: Build a monthly cost review agent</h3>
+  <h3>Prompt 7: Automate it on a schedule</h3>
+  <p>This is where it gets powerful. Instead of remembering to check, you set it up once and it tells you automatically.</p>
   <div class="callout">
-    <p style="color: var(--text); font-size: 14px; line-height: 1.7; white-space: pre-wrap;">Build me a monthly cost review agent that reads my ai-cost-tracker usage log, compares this month to last month, and sends me a plain-English summary of: total spend change, which features cost more or less than before, which models I'm using most, and the top 3 things I should change to save money. Run it on the 1st of every month and send the report to [Telegram/Slack/email].</p>
+    <p style="color: var(--text); font-size: 14px; line-height: 1.7; white-space: pre-wrap;">Set up a cron job that runs the ai-cost-tracker review automatically. I want a [daily/weekly/monthly] review sent to me on [Telegram/Slack/email]. Here's my webhook/token: [paste it]
+
+Only alert me if something spiked or my spend is trending up. If everything looks normal, just log it.</p>
   </div>
+
+  <hr>
+
+  <h2><span class="step-num">Get the most out of this</span>How to make it actually save you money</h2>
+
+  <h3>1. Label everything</h3>
+  <p>The tracker is only as useful as your labels. "default" tells you nothing. "classify-inbound-email" tells you exactly where to look when costs spike. Be specific.</p>
+
+  <h3>2. Check your review before you ship new features</h3>
+  <p>Every new AI feature adds cost. Run a review before and after you ship something new so you can see exactly what it added to your bill.</p>
+
+  <h3>3. Question every expensive model</h3>
+  <p>When the review flags a feature on Sonnet or GPT-4o, ask: "Does this actually need the expensive model?" Test it on Haiku or 4o-mini. If the output is good enough, switch it and save 70-90%.</p>
+
+  <h3>4. Watch the frequency, not just the price</h3>
+  <p>A cheap call that runs 200 times a day costs more than an expensive call that runs once. The review flags high-frequency features for exactly this reason.</p>
+
+  <h3>5. Set a budget and respect it</h3>
+  <p>Pick a monthly number you're comfortable with. Set it as your cap. When you get the alert, don't just bump the cap. Figure out what's eating the budget.</p>
 
   <div class="callout success">
-    <div class="callout-title">These take a bit more setup</div>
-    <p>The prompts above will get you started, but cron workflows and automated agents have more moving parts. If you get stuck or want to see how others are setting theirs up, the AI Systems Accelerator community is where that happens.</p>
+    <div class="callout-title">The automated reviews take a bit more setup</div>
+    <p>The cron workflow and notification integrations have more moving parts than the basic tracker. If you get stuck or want to see how others are setting theirs up, the AI Systems Accelerator community is where that happens.</p>
+  </div>
+
+  <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 24px; margin-top: 24px; text-align: center;">
+    <p style="font-weight: 600; font-size: 16px; margin-bottom: 8px;">Want me to set this up for you?</p>
+    <p style="color: var(--text-muted); font-size: 14px;">If you'd rather have someone build the full system, cron reports, agents, and all, that's what I do. DM me <strong>"BUILD"</strong> on Instagram <a href="https://instagram.com/cassy.garner" style="color: var(--accent); text-decoration: none;">@cassy.garner</a></p>
   </div>
 </div>
 
