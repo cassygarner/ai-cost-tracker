@@ -376,7 +376,7 @@
 <!-- PAGE 3: WHAT YOU GET -->
 <div class="page">
   <h2><span class="step-num">What's Included</span>The AI Cost Tracker</h2>
-  <p class="section-intro">Five TypeScript files you drop into any project. No database, no third-party service, no setup complexity.</p>
+  <p class="section-intro">A set of TypeScript files you drop into any project. No database, no third-party service, no setup complexity.</p>
 
   <table>
     <thead>
@@ -403,8 +403,16 @@
         <td>Daily summary with anomaly detection. Flags anything that's 2x+ its normal spend</td>
       </tr>
       <tr>
-        <td><code>cli-audit.ts</code></td>
-        <td>Scans your usage and tells you which tasks could use cheaper models</td>
+        <td><code>review.ts</code></td>
+        <td>Period-over-period review (daily/weekly/monthly). Compares spend, detects spikes, generates suggestions</td>
+      </tr>
+      <tr>
+        <td><code>ai-review.ts</code></td>
+        <td>AI-powered review. Sends your data to Haiku for specific, contextual recommendations (~$0.01/review)</td>
+      </tr>
+      <tr>
+        <td><code>cli-*.ts</code></td>
+        <td>Terminal commands: <code>npm run summary</code>, <code>npm run audit</code>, <code>npm run review</code>, <code>npm run ai-review</code></td>
       </tr>
     </tbody>
   </table>
