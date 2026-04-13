@@ -168,7 +168,7 @@ This tracker shows you where your money goes. The full system I run automaticall
 - Sends daily cost reports to Telegram
 - Has per-pipeline budget caps that block execution
 
-If you want that built for your project: [link in bio]
+If you want that built for your project: [instagram.com/cassy.garner](https://instagram.com/cassy.garner)
 
 ---
 
