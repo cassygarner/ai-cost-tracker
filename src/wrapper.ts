@@ -7,6 +7,7 @@
  *   const response = await claude.ask("What is 2+2?", { label: "math-helper" });
  */
 
+import "./load-env.js";
 import Anthropic from "@anthropic-ai/sdk";
 import { trackUsage, type TokenEntry } from "./tracker.js";
 
@@ -30,7 +31,14 @@ export interface AskResult {
 }
 
 export function createTrackedClient(opts: TrackedClientOptions = {}) {
-  const client = new Anthropic({ apiKey: opts.apiKey });
+  const apiKey = opts.apiKey || process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) {
+    throw new Error(
+      "[ai-cost-tracker] ANTHROPIC_API_KEY is missing. " +
+        "Add it to your .env file or pass it as `createTrackedClient({ apiKey })`.",
+    );
+  }
+  const client = new Anthropic({ apiKey });
   const defaultModel = opts.defaultModel || "claude-sonnet-4-6";
   const defaultLabel = opts.defaultLabel || "default";
 
@@ -71,7 +79,15 @@ export function createTrackedClient(opts: TrackedClientOptions = {}) {
       .replace(/\n?```\s*$/m, "")
       .trim();
 
-    return { data: JSON.parse(cleaned) as T, usage: result.usage };
+    try {
+      return { data: JSON.parse(cleaned) as T, usage: result.usage };
+    } catch (err) {
+      const snippet = cleaned.slice(0, 200);
+      throw new Error(
+        `[ai-cost-tracker] askJSON could not parse model output as JSON. ` +
+          `First 200 chars: ${snippet}`,
+      );
+    }
   }
 
   return { ask, askJSON, client };

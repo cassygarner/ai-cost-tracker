@@ -5,6 +5,7 @@
  *   or: npm run summary
  */
 
+import "./load-env.js";
 import { initTracker } from "./tracker.js";
 import { generateSummary, formatSummary } from "./summary.js";
 

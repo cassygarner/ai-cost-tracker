@@ -11,6 +11,7 @@
  * Cost: ~$0.01-0.05 per review (one Haiku call).
  */
 
+import "./load-env.js";
 import { initTracker } from "./tracker.js";
 import { generateAIReview, type AIReviewOptions } from "./ai-review.js";
 import type { ReviewPeriod } from "./review.js";
