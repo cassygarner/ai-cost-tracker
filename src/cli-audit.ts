@@ -5,8 +5,8 @@
  *   or: npm run audit
  */
 
-import { initTracker, getSpendByLabel, getSpendByModel, getMonthSpend } from "./tracker.js";
-import { MODEL_PRICING } from "./pricing.js";
+import { initTracker, getSpendByLabel, getSpendByModel, getMonthSpend, getAllEntries } from "./tracker.js";
+import { MODEL_PRICING, getModelTier } from "./pricing.js";
 
 const logPath = process.argv[2] || undefined;
 initTracker({ logPath });
@@ -20,6 +20,23 @@ const HAIKU_TASKS = [
 const monthSpend = getMonthSpend();
 const byLabel = getSpendByLabel(30);
 const byModel = getSpendByModel(30);
+
+// Per-label model usage (last 30 days) so the audit knows which model
+// each label is actually running on — without this it flags Haiku tasks
+// as "consider Haiku" (the original bug).
+const cutoff = new Date(Date.now() - 30 * 86_400_000).toISOString();
+const labelModels = new Map<string, Map<string, number>>();
+for (const e of getAllEntries()) {
+  if (e.timestamp < cutoff) continue;
+  if (!labelModels.has(e.label)) labelModels.set(e.label, new Map());
+  const m = labelModels.get(e.label)!;
+  m.set(e.model, (m.get(e.model) || 0) + e.costUSD);
+}
+function dominantModel(label: string): string | null {
+  const models = labelModels.get(label);
+  if (!models || models.size === 0) return null;
+  return Array.from(models.entries()).sort((a, b) => b[1] - a[1])[0][0];
+}
 
 console.log("AI COST TRACKER — MODEL AUDIT");
 console.log("=".repeat(40));
@@ -46,16 +63,21 @@ for (const [label, stats] of labelEntries) {
 
   // Check if label sounds like a classification/simple task
   const isSimpleTask = HAIKU_TASKS.some((t) => lowerLabel.includes(t));
+  if (!isSimpleTask) continue;
 
-  if (isSimpleTask) {
-    // Estimate savings: assume ~73% reduction switching to Haiku
-    const est = stats.cost * 0.73;
-    totalSavings += est;
-    recommendations.push(
-      `  "${label}" looks like a classification task (${stats.calls} calls, $${stats.cost.toFixed(4)})\n` +
-      `    -> Consider Haiku instead of Sonnet. Est. savings: $${est.toFixed(4)}/month`,
-    );
-  }
+  // Skip if the task is already running on a cheap model.
+  const model = dominantModel(label);
+  const tier = model ? getModelTier(model) : "unknown";
+  if (tier === "cheap") continue;
+
+  // Estimate savings: assume ~73% reduction switching to Haiku
+  const est = stats.cost * 0.73;
+  totalSavings += est;
+  const modelLabel = model ? ` on ${model}` : "";
+  recommendations.push(
+    `  "${label}" looks like a classification task${modelLabel} (${stats.calls} calls, $${stats.cost.toFixed(4)})\n` +
+    `    -> Consider Haiku. Est. savings: $${est.toFixed(4)}/month`,
+  );
 }
 
 if (recommendations.length > 0) {
