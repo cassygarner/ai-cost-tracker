@@ -55,6 +55,7 @@ export function getModelTier(model: string): ModelTier {
 }
 
 const DEFAULT_PRICING = { input: 3, output: 15 }; // assume sonnet-tier if unknown
+const warnedModels = new Set<string>();
 
 export function estimateCostUSD(
   model: string,
@@ -62,10 +63,23 @@ export function estimateCostUSD(
   outputTokens: number,
 ): number {
   // Try exact match, then strip common prefixes
-  const pricing =
-    MODEL_PRICING[model] ||
-    MODEL_PRICING[model.replace(/^(anthropic|openai|google|deepseek)\//, "")] ||
-    DEFAULT_PRICING;
+  const stripped = model.replace(/^(anthropic|openai|google|deepseek)\//, "");
+  const pricing = MODEL_PRICING[model] || MODEL_PRICING[stripped];
+
+  if (!pricing) {
+    if (!warnedModels.has(model)) {
+      warnedModels.add(model);
+      console.warn(
+        `[ai-cost-tracker] Unknown model "${model}". ` +
+          `Using Sonnet-tier pricing as a fallback ($3/$15 per 1M). ` +
+          `Add it to MODEL_PRICING in src/pricing.ts for accurate costs.`,
+      );
+    }
+    return (
+      (inputTokens / 1_000_000) * DEFAULT_PRICING.input +
+      (outputTokens / 1_000_000) * DEFAULT_PRICING.output
+    );
+  }
 
   return (
     (inputTokens / 1_000_000) * pricing.input +

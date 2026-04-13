@@ -8,6 +8,7 @@
  *   npm run review monthly
  */
 
+import "./load-env.js";
 import { initTracker } from "./tracker.js";
 import { generateReview, formatReview, type ReviewPeriod } from "./review.js";
 

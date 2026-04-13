@@ -5,6 +5,7 @@
  *   or: npm run audit
  */
 
+import "./load-env.js";
 import { initTracker, getSpendByLabel, getSpendByModel, getMonthSpend, getAllEntries } from "./tracker.js";
 import { MODEL_PRICING, getModelTier } from "./pricing.js";
 
