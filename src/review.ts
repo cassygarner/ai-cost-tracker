@@ -161,6 +161,9 @@ export function formatReview(r: ReviewReport): string {
   if (r.previousSpend > 0) {
     const arrow = r.changePercent > 0 ? "UP" : r.changePercent < 0 ? "DOWN" : "FLAT";
     lines.push(`Change:       ${arrow} ${Math.abs(Math.round(r.changePercent))}%`);
+  } else if (r.currentSpend > 0) {
+    const needed = r.period === "daily" ? "2 days" : r.period === "weekly" ? "14 days" : "60 days";
+    lines.push(`Note:         No prior period to compare yet. Need ${needed} of data for a real trend.`);
   }
 
   if (r.topFeatures.length > 0) {
