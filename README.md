@@ -4,13 +4,27 @@ Track every AI API call, see exactly where your money goes, and catch cost spike
 
 Built by [@cassy.garner](https://instagram.com/cassy.garner) — this is the same system I use to manage 37 automated cron jobs and 12 AI agents at ~$50/month.
 
+## Who this is for
+
+- Developers with a **TypeScript / JavaScript / Node.js** project that calls the Anthropic, OpenAI, Google, or DeepSeek API directly.
+- Anyone who can run `npm install` in their project.
+
+## Who this is NOT for
+
+- Claude.ai, ChatGPT, or Claude Code subscription users — this tracks **API** spend, not seat/subscription usage.
+- No-code users (Zapier, Make, n8n) — there's no code surface to drop the tracker into.
+- Python-only projects — the tracker is TS; you'd need a parallel Python port (not included).
+
+If this isn't you, the rest of the guide won't fit. No shame, just pick a tool that matches your stack.
+
 ## What it does
 
 - Logs every LLM call with model, tokens, cost, and a label you choose
 - Stores everything in a local JSON file (no database needed)
+- Captures Anthropic prompt-cache tokens automatically (accurate costs, even with caching)
 - Generates daily summaries with anomaly detection (flags 2x+ spend spikes)
 - Audits your usage and tells you which tasks could use cheaper models
-- Optional monthly budget cap with warnings
+- Optional monthly budget cap with built-in Telegram, Slack, and webhook alert helpers
 
 ## Quick start
 
@@ -122,18 +136,29 @@ Scans your full usage history and finds:
 
 The rule: start with the cheapest model. Only upgrade if quality isn't good enough.
 
-## Budget cap
+## Budget cap + alerts
 
-Set a monthly cap and get warned when you exceed it:
+Set a monthly cap and route alerts to Telegram, Slack, or any webhook. Helpers ship in the box — no integrations to build.
 
 ```typescript
+import { initTracker, sendTelegramBudgetAlert } from "./src/index.js";
+
 initTracker({
   monthlyCap: 50,
-  onBudgetExceeded: (spent, cap) => {
-    // Send yourself a Slack/Telegram/email alert
-    console.warn(`Budget exceeded: $${spent.toFixed(2)} / $${cap}`);
-  },
+  onBudgetExceeded: sendTelegramBudgetAlert({
+    botToken: process.env.TELEGRAM_BOT_TOKEN!,
+    chatId: process.env.TELEGRAM_CHAT_ID!,
+  }),
 });
+```
+
+Also available: `sendSlackBudgetAlert({ webhookUrl })` and `sendWebhookBudgetAlert({ url, headers })`. All three are rate-limited to once per UTC day so a budget breach doesn't spam you on every call after.
+
+Prefer your own handler? Pass any function:
+```typescript
+onBudgetExceeded: (spent, cap) => {
+  // your own alert logic
+}
 ```
 
 ## File structure
@@ -142,12 +167,15 @@ initTracker({
 ai-cost-tracker/
   src/
     tracker.ts     — core tracking + JSON persistence
-    wrapper.ts     — drop-in Anthropic client wrapper
-    pricing.ts     — model pricing matrix (update when prices change)
+    wrapper.ts     — drop-in Anthropic client wrapper (captures cache tokens)
+    pricing.ts     — model pricing matrix + cache multipliers
     summary.ts     — daily summary + anomaly detection
-    cli-summary.ts — run: npm run summary
-    cli-audit.ts   — run: npm run audit
+    review.ts      — period comparisons (daily/weekly/monthly)
+    ai-review.ts   — Haiku-powered contextual review
+    notify.ts      — Telegram/Slack/webhook budget alert helpers
+    cli-*.ts       — run via: npm run summary | audit | review | ai-review
     index.ts       — all exports
+  CLAUDE.md        — context for Claude Code sessions installing this
   ai-costs/
     usage.json     — your usage log (auto-created, add to .gitignore)
 ```

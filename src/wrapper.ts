@@ -39,7 +39,8 @@ export function createTrackedClient(opts: TrackedClientOptions = {}) {
     );
   }
   const client = new Anthropic({ apiKey });
-  const defaultModel = opts.defaultModel || "claude-sonnet-4-6";
+  // Default to the cheapest model — upgrade to Sonnet/Opus explicitly when quality demands it.
+  const defaultModel = opts.defaultModel || "claude-haiku-4-5-20251001";
   const defaultLabel = opts.defaultLabel || "default";
 
   async function ask(prompt: string, options?: AskOptions): Promise<AskResult> {
@@ -60,6 +61,8 @@ export function createTrackedClient(opts: TrackedClientOptions = {}) {
       provider: "anthropic",
       inputTokens: response.usage.input_tokens,
       outputTokens: response.usage.output_tokens,
+      cachedInputTokens: response.usage.cache_read_input_tokens ?? 0,
+      cacheCreationTokens: response.usage.cache_creation_input_tokens ?? 0,
     });
 
     const block = response.content[0];

@@ -17,6 +17,10 @@ export interface TokenEntry {
   provider: string;
   inputTokens: number;
   outputTokens: number;
+  /** Tokens read from prompt cache (Anthropic). Priced at 10% of input rate. */
+  cachedInputTokens?: number;
+  /** Tokens written to prompt cache (Anthropic). Priced at 125% of input rate. */
+  cacheCreationTokens?: number;
   costUSD: number;
   timestamp: string;
 }
@@ -68,16 +72,26 @@ export function trackUsage(data: {
   provider?: string;
   inputTokens: number;
   outputTokens: number;
+  cachedInputTokens?: number;
+  cacheCreationTokens?: number;
 }): TokenEntry {
   ensureLoaded();
 
-  const cost = estimateCostUSD(data.model, data.inputTokens, data.outputTokens);
+  const cost = estimateCostUSD(
+    data.model,
+    data.inputTokens,
+    data.outputTokens,
+    data.cachedInputTokens,
+    data.cacheCreationTokens,
+  );
   const entry: TokenEntry = {
     label: data.label,
     model: data.model,
     provider: data.provider || "unknown",
     inputTokens: data.inputTokens,
     outputTokens: data.outputTokens,
+    ...(data.cachedInputTokens ? { cachedInputTokens: data.cachedInputTokens } : {}),
+    ...(data.cacheCreationTokens ? { cacheCreationTokens: data.cacheCreationTokens } : {}),
     costUSD: Math.round(cost * 1_000_000) / 1_000_000, // 6 decimal places
     timestamp: new Date().toISOString(),
   };

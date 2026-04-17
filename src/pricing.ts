@@ -57,32 +57,35 @@ export function getModelTier(model: string): ModelTier {
 const DEFAULT_PRICING = { input: 3, output: 15 }; // assume sonnet-tier if unknown
 const warnedModels = new Set<string>();
 
+// Anthropic 5-minute ephemeral cache: reads cost 10% of base input,
+// writes cost 125%. Silently ignored for providers without caching.
+const CACHE_READ_MULTIPLIER = 0.1;
+const CACHE_WRITE_MULTIPLIER = 1.25;
+
 export function estimateCostUSD(
   model: string,
   inputTokens: number,
   outputTokens: number,
+  cachedInputTokens = 0,
+  cacheCreationTokens = 0,
 ): number {
-  // Try exact match, then strip common prefixes
   const stripped = model.replace(/^(anthropic|openai|google|deepseek)\//, "");
   const pricing = MODEL_PRICING[model] || MODEL_PRICING[stripped];
+  const rates = pricing || DEFAULT_PRICING;
 
-  if (!pricing) {
-    if (!warnedModels.has(model)) {
-      warnedModels.add(model);
-      console.warn(
-        `[ai-cost-tracker] Unknown model "${model}". ` +
-          `Using Sonnet-tier pricing as a fallback ($3/$15 per 1M). ` +
-          `Add it to MODEL_PRICING in src/pricing.ts for accurate costs.`,
-      );
-    }
-    return (
-      (inputTokens / 1_000_000) * DEFAULT_PRICING.input +
-      (outputTokens / 1_000_000) * DEFAULT_PRICING.output
+  if (!pricing && !warnedModels.has(model)) {
+    warnedModels.add(model);
+    console.warn(
+      `[ai-cost-tracker] Unknown model "${model}". ` +
+        `Using Sonnet-tier pricing as a fallback ($3/$15 per 1M). ` +
+        `Add it to MODEL_PRICING in src/pricing.ts for accurate costs.`,
     );
   }
 
   return (
-    (inputTokens / 1_000_000) * pricing.input +
-    (outputTokens / 1_000_000) * pricing.output
+    (inputTokens / 1_000_000) * rates.input +
+    (outputTokens / 1_000_000) * rates.output +
+    (cachedInputTokens / 1_000_000) * rates.input * CACHE_READ_MULTIPLIER +
+    (cacheCreationTokens / 1_000_000) * rates.input * CACHE_WRITE_MULTIPLIER
   );
 }
