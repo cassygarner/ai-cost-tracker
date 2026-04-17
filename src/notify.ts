@@ -27,6 +27,17 @@ export interface WebhookOptions {
   headers?: Record<string, string>;
 }
 
+export interface EmailOptions {
+  /** Resend API key. Get one free at resend.com. */
+  apiKey: string;
+  /** Verified sender address, e.g. "alerts@yourdomain.com" */
+  from: string;
+  /** Recipient address, or an array of addresses. */
+  to: string | string[];
+  /** Optional subject override. */
+  subject?: string;
+}
+
 type BudgetHandler = (spent: number, cap: number) => void | Promise<void>;
 
 // Re-alert at most once per UTC day per process so a budget-exceeded state
@@ -89,6 +100,30 @@ export async function sendWebhook(opts: WebhookOptions, payload: unknown): Promi
   }
 }
 
+export async function sendEmail(
+  opts: EmailOptions,
+  subject: string,
+  text: string,
+): Promise<void> {
+  const res = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${opts.apiKey}`,
+    },
+    body: JSON.stringify({
+      from: opts.from,
+      to: opts.to,
+      subject: opts.subject || subject,
+      text,
+    }),
+  });
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`[ai-cost-tracker] Email send failed: ${res.status} ${body}`);
+  }
+}
+
 /**
  * Factory: returns an `onBudgetExceeded` handler that sends to Telegram.
  * Rate-limited to once per day to avoid spam.
@@ -128,6 +163,18 @@ export function sendWebhookBudgetAlert(opts: WebhookOptions): BudgetHandler {
       });
     } catch (err) {
       console.warn("[ai-cost-tracker] Webhook alert failed:", err);
+    }
+  };
+}
+
+export function sendEmailBudgetAlert(opts: EmailOptions): BudgetHandler {
+  const dest = Array.isArray(opts.to) ? opts.to.join(",") : opts.to;
+  return async (spent, cap) => {
+    if (!shouldSend(`email:${dest}`)) return;
+    try {
+      await sendEmail(opts, "AI budget exceeded", defaultMessage(spent, cap));
+    } catch (err) {
+      console.warn("[ai-cost-tracker] Email alert failed:", err);
     }
   };
 }

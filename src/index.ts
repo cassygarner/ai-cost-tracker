@@ -8,12 +8,14 @@ export {
   sendTelegram,
   sendSlack,
   sendWebhook,
+  sendEmail,
   sendTelegramBudgetAlert,
   sendSlackBudgetAlert,
   sendWebhookBudgetAlert,
+  sendEmailBudgetAlert,
 } from "./notify.js";
 export type { TokenEntry, TrackerConfig } from "./tracker.js";
 export type { DailySummary } from "./summary.js";
 export type { ReviewReport, ReviewPeriod } from "./review.js";
 export type { TrackedClientOptions, AskOptions, AskResult } from "./wrapper.js";
-export type { TelegramOptions, SlackOptions, WebhookOptions } from "./notify.js";
+export type { TelegramOptions, SlackOptions, WebhookOptions, EmailOptions } from "./notify.js";
