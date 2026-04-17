@@ -13,8 +13,8 @@ export const MODEL_PRICING: Record<string, { input: number; output: number }> = 
   "claude-3-5-sonnet-latest": { input: 3, output: 15 },
   "claude-opus-4-20250514": { input: 15, output: 75 },
   "claude-opus-4-6": { input: 15, output: 75 },
-  "claude-haiku-4-5-20251001": { input: 0.8, output: 4 },
-  "claude-haiku-4-5": { input: 0.8, output: 4 },
+  "claude-haiku-4-5-20251001": { input: 1, output: 5 },
+  "claude-haiku-4-5": { input: 1, output: 5 },
   "claude-3-5-haiku-20241022": { input: 0.8, output: 4 },
   "claude-3-5-haiku-latest": { input: 0.8, output: 4 },
 

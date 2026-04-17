@@ -20,12 +20,12 @@ export interface DailySummary {
 }
 
 const DOWNGRADE_CANDIDATES: Record<string, { to: string; savingsPercent: number }> = {
-  "claude-sonnet-4-20250514": { to: "claude-haiku-4-5-20251001", savingsPercent: 73 },
-  "claude-sonnet-4-5": { to: "claude-haiku-4-5-20251001", savingsPercent: 73 },
-  "claude-sonnet-4-5-20250929": { to: "claude-haiku-4-5-20251001", savingsPercent: 73 },
-  "claude-sonnet-4-6": { to: "claude-haiku-4-5-20251001", savingsPercent: 73 },
-  "claude-3-5-sonnet-20241022": { to: "claude-haiku-4-5-20251001", savingsPercent: 73 },
-  "claude-3-5-sonnet-latest": { to: "claude-haiku-4-5-20251001", savingsPercent: 73 },
+  "claude-sonnet-4-20250514": { to: "claude-haiku-4-5-20251001", savingsPercent: 67 },
+  "claude-sonnet-4-5": { to: "claude-haiku-4-5-20251001", savingsPercent: 67 },
+  "claude-sonnet-4-5-20250929": { to: "claude-haiku-4-5-20251001", savingsPercent: 67 },
+  "claude-sonnet-4-6": { to: "claude-haiku-4-5-20251001", savingsPercent: 67 },
+  "claude-3-5-sonnet-20241022": { to: "claude-haiku-4-5-20251001", savingsPercent: 67 },
+  "claude-3-5-sonnet-latest": { to: "claude-haiku-4-5-20251001", savingsPercent: 67 },
   "claude-opus-4-20250514": { to: "claude-sonnet-4-6", savingsPercent: 80 },
   "claude-opus-4-6": { to: "claude-sonnet-4-6", savingsPercent: 80 },
   "gpt-4o": { to: "gpt-4o-mini", savingsPercent: 94 },

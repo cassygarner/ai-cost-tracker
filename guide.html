@@ -429,7 +429,7 @@
   <p>My frame analysis and personal assistant agents were running through OpenRouter when I'd intended them to use the Anthropic API directly. My OpenRouter credits kept draining and I didn't know why. Once I tracked each call with a label and provider, I could see exactly which features were hitting the wrong provider. I switched them to Anthropic direct with OpenRouter as a fallback only.</p>
 
   <h3>3. Expensive models were running on simple tasks</h3>
-  <p>My agent router was using Claude Sonnet to decide which specialist should handle each message. That's a classification task — Haiku handles it just as well for 73% less. My personal assistant's sub-agents were on GPT-4o-mini through OpenRouter when Haiku through Anthropic direct was cheaper and more reliable. The tracker showed me which tasks were using which models, and each fix took minutes.</p>
+  <p>My agent router was using Claude Sonnet to decide which specialist should handle each message. That's a classification task — Haiku handles it just as well for 67% less. My personal assistant's sub-agents were on GPT-4o-mini through OpenRouter when Haiku through Anthropic direct was cheaper and more reliable. The tracker showed me which tasks were using which models, and each fix took minutes.</p>
 
   <h3>4. Pipelines needed cost caps and frequency tuning</h3>
   <p>My frame analysis pipeline had no spending limit. I added a $200/month cap that automatically stops the pipeline when it's reached. Some of my crons were running every 30 minutes when once or twice a day caught the same data. Small frequency adjustments, big cost difference over a month.</p>
@@ -628,17 +628,17 @@ Only alert me if something spiked or my spend is trending up. If everything look
       <tr>
         <td>Classifying, routing, tagging</td>
         <td><span class="tag green">Haiku</span></td>
-        <td>up to 73% vs Sonnet</td>
+        <td>up to 67% vs Sonnet</td>
       </tr>
       <tr>
         <td>Scoring, ranking, filtering</td>
         <td><span class="tag green">Haiku</span></td>
-        <td>up to 73% vs Sonnet</td>
+        <td>up to 67% vs Sonnet</td>
       </tr>
       <tr>
         <td>Parsing, extracting structured data</td>
         <td><span class="tag green">Haiku</span></td>
-        <td>up to 73% vs Sonnet</td>
+        <td>up to 67% vs Sonnet</td>
       </tr>
       <tr>
         <td>Simple summarization</td>
@@ -687,8 +687,8 @@ Only alert me if something spiked or my spend is trending up. If everything look
     <tbody>
       <tr>
         <td>Claude Haiku 4.5</td>
-        <td>$0.80</td>
-        <td>$4.00</td>
+        <td>$1.00</td>
+        <td>$5.00</td>
       </tr>
       <tr>
         <td>GPT-4o-mini</td>

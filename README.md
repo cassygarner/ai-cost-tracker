@@ -2,7 +2,7 @@
 
 Track every AI API call, see exactly where your money goes, and catch cost spikes before they hurt.
 
-Built by [@cassy.garner](https://instagram.com/cassy.garner) — this is the same system I use to manage 37 automated cron jobs and 12 AI agents at ~$50/month.
+Built by [@cassy.garner](https://instagram.com/cassy.garner) — this is the same system I use to manage 37 automated cron jobs and 12 AI agents. It took my AI spend from **~$300/month down to ~$50/month** without cutting any features. Same agents, same automations, 83% less spend.
 
 ## Who this is for
 
@@ -110,7 +110,7 @@ SPEND BY LABEL:
 
 OPTIMIZATION OPPORTUNITIES:
   route-message (claude-sonnet-4-6)
-    -> Switch to claude-haiku-4-5-20251001 (73% cheaper)
+    -> Switch to claude-haiku-4-5-20251001 (67% cheaper)
     -> Est. savings: $0.0840/week
 ```
 
@@ -128,8 +128,8 @@ Scans your full usage history and finds:
 
 | Task type | Use this | Not this | Savings |
 |-----------|----------|----------|---------|
-| Classifying, routing, tagging, scoring | Haiku | Sonnet | 73% |
-| Summarizing, extracting, parsing | Haiku or GPT-4o-mini | Sonnet/GPT-4o | 73-94% |
+| Classifying, routing, tagging, scoring | Haiku | Sonnet | 67% |
+| Summarizing, extracting, parsing | Haiku or GPT-4o-mini | Sonnet/GPT-4o | 67-94% |
 | Drafting, creating, strategizing | Sonnet | Opus | 80% |
 | Complex reasoning, multi-step analysis | Sonnet | Opus | 80% |
 | Only when you truly need the best | Opus | — | — |
@@ -152,7 +152,7 @@ initTracker({
 });
 ```
 
-Also available: `sendSlackBudgetAlert({ webhookUrl })` and `sendWebhookBudgetAlert({ url, headers })`. All three are rate-limited to once per UTC day so a budget breach doesn't spam you on every call after.
+Also available: `sendSlackBudgetAlert({ webhookUrl })`, `sendWebhookBudgetAlert({ url, headers })`, and `sendEmailBudgetAlert({ apiKey, from, to })` (uses [Resend](https://resend.com) — grab a free key and verify a sender domain). All four are rate-limited to once per UTC day so a budget breach doesn't spam you on every call after.
 
 Prefer your own handler? Pass any function:
 ```typescript
@@ -172,7 +172,7 @@ ai-cost-tracker/
     summary.ts     — daily summary + anomaly detection
     review.ts      — period comparisons (daily/weekly/monthly)
     ai-review.ts   — Haiku-powered contextual review
-    notify.ts      — Telegram/Slack/webhook budget alert helpers
+    notify.ts      — Telegram/Slack/webhook/email budget alert helpers
     cli-*.ts       — run via: npm run summary | audit | review | ai-review
     index.ts       — all exports
   CLAUDE.md        — context for Claude Code sessions installing this

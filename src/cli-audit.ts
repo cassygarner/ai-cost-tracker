@@ -71,8 +71,8 @@ for (const [label, stats] of labelEntries) {
   const tier = model ? getModelTier(model) : "unknown";
   if (tier === "cheap") continue;
 
-  // Estimate savings: assume ~73% reduction switching to Haiku
-  const est = stats.cost * 0.73;
+  // Estimate savings: ~67% reduction switching from Sonnet 4.x to Haiku 4.5
+  const est = stats.cost * 0.67;
   totalSavings += est;
   const modelLabel = model ? ` on ${model}` : "";
   recommendations.push(
